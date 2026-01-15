@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海底数字捕鱼赛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(180deg, #1a237e 0%, #0d47a1 50%, #01579b 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 气泡背景 */
+        .bubble {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        /* 题目区域 */
+        #questionArea {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        #questionText {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+
+        #timer {
+            font-size: 24px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        /* 计分板 */
+        #scoreBoard {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+
+        #combo {
+            font-size: 18px;
+            color: #ff9800;
+            margin-top: 5px;
+        }
+
+        /* 开始按钮 */
+        #startBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px 50px;
+            font-size: 28px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+            z-index: 200;
+        }
+
+        #startBtn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 小鱼容器 */
+        #fishContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+        }
+
+        /* 小鱼 */
+        .fish {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 50;
+        }
+
+        .fish:hover {
+            transform: scale(1.15);
+        }
+
+        .fish-body {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fish-shape {
+            position: relative;
+        }
+
+        .fish-number {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* 红色小鱼 - 加减法 */
+        .fish-red .fish-shape {
+            width: 70px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+
+        .fish-red .fish-tail {
+            position: absolute;
+            left: -18px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right: 22px solid #ee5a5a;
+        }
+
+        .fish-red .fish-eye {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: 10px;
+            right: 12px;
+        }
+
+        .fish-red .fish-eye::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: black;
+            border-radius: 50%;
+            top: 2px;
+            right: 2px;
+        }
+
+        /* 黄色小鱼 - 乘法 */
+        .fish-yellow .fish-shape {
+            width: 70px;
+            height: 45px;
+            background: linear-gradient(135deg, #ffd54f, #ffb300);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+
+        .fish-yellow .fish-tail {
+            position: absolute;
+            left: -18px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right: 22px solid #ffb300;
+        }
+
+        .fish-yellow .fish-eye {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: 10px;
+            right: 12px;
+        }
+
+        .fish-yellow .fish-eye::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: black;
+            border-radius: 50%;
+            top: 2px;
+            right: 2px;
+        }
+
+        /* 绿色小鱼 - 混合 */
+        .fish-green .fish-shape {
+            width: 70px;
+            height: 45px;
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+
+        .fish-green .fish-tail {
+            position: absolute;
+            left: -18px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right: 22px solid #43a047;
+        }
+
+        .fish-green .fish-eye {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: 10px;
+            right: 12px;
+        }
+
+        .fish-green .fish-eye::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: black;
+            border-radius: 50%;
+            top: 2px;
+            right: 2px;
+        }
+
+        /* 反馈动画 */
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px 50px;
+            border-radius: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            z-index: 300;
+            animation: feedback 1.5s ease-in-out forwards;
+        }
+
+        .feedback.correct {
+            background: #4caf50;
+            color: white;
+        }
+
+        .feedback.wrong {
+            background: #f44336;
+            color: white;
+        }
+
+        .feedback.timeout {
+            background: #ff9800;
+            color: white;
+        }
+
+        @keyframes feedback {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        /* 屏幕闪烁效果 */
+        .flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 400;
+            animation: flash 0.3s ease-out forwards;
+        }
+
+        .flash.correct {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .flash.wrong {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            #questionText {
+                font-size: 24px;
+            }
+
+            #timer {
+                font-size: 20px;
+            }
+
+            #score {
+                font-size: 20px;
+            }
+
+            #combo {
+                font-size: 16px;
+            }
+
+            .fish-red .fish-shape,
+            .fish-yellow .fish-shape,
+            .fish-green .fish-shape {
+                width: 55px;
+                height: 35px;
+            }
+
+            .fish-number {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 气泡背景 -->
+    <div id="bubbles"></div>
+
+    <!-- 题目区域 -->
+    <div id="questionArea">
+        <div id="questionText">205 × 4 = ?</div>
+        <div id="timer">⏱️ 10秒</div>
+    </div>
+
+    <!-- 计分板 -->
+    <div id="scoreBoard">
+        <div id="score">得分: 0</div>
+        <div id="combo">连击: 0</div>
+    </div>
+
+    <!-- 开始按钮 -->
+    <button id="startBtn">开始游戏</button>
+
+    <!-- 小鱼容器 -->
+    <div id="fishContainer"></div>
+
+    <script>
+        // 题库
+        const questionBank = [
+            { question: "358 + 276", answer: 634, type: "addition" },
+            { question: "723 - 456", answer: 267, type: "subtraction" },
+            { question: "205 × 4", answer: 820, type: "multiplication" },
+            { question: "456 + 389", answer: 845, type: "addition" },
+            { question: "812 - 397", answer: 415, type: "subtraction" },
+            { question: "156 × 3", answer: 468, type: "multiplication" },
+            { question: "678 + 234", answer: 912, type: "addition" },
+            { question: "901 - 567", answer: 334, type: "subtraction" },
+            { question: "234 × 2", answer: 468, type: "multiplication" },
+            { question: "543 + 278", answer: 821, type: "addition" },
+            { question: "756 - 389", answer: 367, type: "subtraction" },
+            { question: "312 × 3", answer: 936, type: "multiplication" },
+            { question: "489 + 512", answer: 1001, type: "addition" },
+            { question: "823 - 456", answer: 367, type: "subtraction" },
+            { question: "178 × 4", answer: 712, type: "multiplication" },
+            { question: "654 + 327", answer: 981, type: "addition" },
+            { question: "902 - 345", answer: 557, type: "subtraction" },
+            { question: "267 × 2", answer: 534, type: "multiplication" },
+            { question: "578 + 423", answer: 1001, type: "addition" },
+            { question: "834 - 567", answer: 267, type: "subtraction" },
+            { question: "145 × 3", answer: 435, type: "multiplication" },
+            { question: "723 + 189", answer: 912, type: "addition" },
+            { question: "956 - 378", answer: 578, type: "subtraction" },
+            { question: "234 × 4", answer: 936, type: "multiplication" },
+            { question: "678 + 345", answer: 1023, type: "addition" },
+            { question: "812 - 423", answer: 389, type: "subtraction" },
+            { question: "356 × 2", answer: 712, type: "multiplication" },
+            { question: "567 + 234", answer: 801, type: "addition" },
+            { question: "903 - 456", answer: 447, type: "subtraction" },
+            { question: "189 × 3", answer: 567, type: "multiplication" }
+        ];
+
+        // 游戏状态
+        let score = 0;
+        let combo = 0;
+        let currentQuestion = null;
+        let timerInterval = null;
+        let timeLeft = 10;
+        let gameStarted = false;
+        let fishElements = [];
+
+        // DOM元素
+        const startBtn = document.getElementById('startBtn');
+        const questionText = document.getElementById('questionText');
+        const timerDisplay = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('score');
+        const comboDisplay = document.getElementById('combo');
+        const fishContainer = document.getElementById('fishContainer');
+
+        // 创建气泡背景
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            for (let i = 0; i < 30; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.top = Math.random() * 100 + '%';
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // 生成随机答案（包括正确答案和干扰项）
+        function generateAnswers(correctAnswer, count = 5) {
+            const answers = [correctAnswer];
+            const minAnswer = Math.max(0, correctAnswer - 100);
+            const maxAnswer = correctAnswer + 100;
+
+            while (answers.length < count) {
+                const randomAnswer = Math.floor(Math.random() * (maxAnswer - minAnswer + 1)) + minAnswer;
+                if (!answers.includes(randomAnswer)) {
+                    answers.push(randomAnswer);
+                }
+            }
+
+            // 随机打乱
+            return answers.sort(() => Math.random() - 0.5);
+        }
+
+        // 创建小鱼
+        function createFish(answer, type) {
+            const fish = document.createElement('div');
+            fish.className = `fish fish-${type}`;
+            fish.dataset.answer = answer;
+
+            const fishBody = document.createElement('div');
+            fishBody.className = 'fish-body';
+
+            const fishShape = document.createElement('div');
+            fishShape.className = 'fish-shape';
+
+            const fishTail = document.createElement('div');
+            fishTail.className = 'fish-tail';
+
+            const fishEye = document.createElement('div');
+            fishEye.className = 'fish-eye';
+
+            const fishNumber = document.createElement('div');
+            fishNumber.className = 'fish-number';
+            fishNumber.textContent = answer;
+
+            fishShape.appendChild(fishTail);
+            fishShape.appendChild(fishEye);
+            fishBody.appendChild(fishShape);
+            fishBody.appendChild(fishNumber);
+            fish.appendChild(fishBody);
+
+            // 随机位置
+            const maxX = window.innerWidth - 100;
+            const maxY = window.innerHeight - 200;
+            const startX = Math.random() * maxX;
+            const startY = 150 + Math.random() * (maxY - 150);
+
+            fish.style.left = startX + 'px';
+            fish.style.top = startY + 'px';
+
+            // 随机游动方向
+            const duration = 3 + Math.random() * 4;
+            const direction = Math.random() > 0.5 ? 1 : -1;
+            const distance = 100 + Math.random() * 200;
+
+            fish.style.animation = `fishSwim${direction} ${duration}s ease-in-out infinite`;
+
+            // 点击事件
+            fish.addEventListener('click', () => checkAnswer(answer, fish));
+
+            return fish;
+        }
+
+        // 生成小鱼游动动画
+        function generateFishAnimation() {
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fishSwim1 {
+                    0%, 100% {
+                        transform: translateX(0) translateY(0);
+                    }
+                    25% {
+                        transform: translateX(${100 + Math.random() * 100}px) translateY(${-30 + Math.random() * 60}px);
+                    }
+                    50% {
+                        transform: translateX(0) translateY(0);
+                    }
+                    75% {
+                        transform: translateX(${-100 - Math.random() * 100}px) translateY(${30 - Math.random() * 60}px);
+                    }
+                }
+                @keyframes fishSwim-1 {
+                    0%, 100% {
+                        transform: translateX(0) translateY(0);
+                    }
+                    25% {
+                        transform: translateX(${-100 - Math.random() * 100}px) translateY(${-30 + Math.random() * 60}px);
+                    }
+                    50% {
+                        transform: translateX(0) translateY(0);
+                    }
+                    75% {
+                        transform: translateX(${100 + Math.random() * 100}px) translateY(${30 - Math.random() * 60}px);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 显示新题目
+        function showNewQuestion() {
+            // 清除旧的小鱼
+            fishElements.forEach(fish => fish.remove());
+            fishElements = [];
+
+            // 随机选择题目
+            currentQuestion = questionBank[Math.floor(Math.random() * questionBank.length)];
+            questionText.textContent = currentQuestion.question + ' = ?';
+
+            // 生成答案
+            const answers = generateAnswers(currentQuestion.answer, 5);
+
+            // 创建小鱼
+            answers.forEach((answer, index) => {
+                let type;
+                if (currentQuestion.type === 'multiplication') {
+                    type = 'yellow';
+                } else if (currentQuestion.type === 'addition' || currentQuestion.type === 'subtraction') {
+                    type = index % 2 === 0 ? 'red' : 'green';
+                } else {
+                    type = 'red';
+                }
+
+                const fish = createFish(answer, type);
+                fishContainer.appendChild(fish);
+                fishElements.push(fish);
+            });
+
+            // 重置计时器
+            resetTimer();
+        }
+
+        // 重置计时器
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 10;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        // 更新计时器显示
+        function updateTimerDisplay() {
+            timerDisplay.textContent = `⏱️ ${timeLeft}秒`;
+            if (timeLeft <= 3) {
+                timerDisplay.style.color = '#f44336';
+            } else {
+                timerDisplay.style.color = '#ff6b6b';
+            }
+        }
+
+        // 检查答案
+        function checkAnswer(answer, fishElement) {
+            if (!gameStarted) return;
+
+            if (answer === currentQuestion.answer) {
+                // 答对
+                handleCorrectAnswer(fishElement);
+            } else {
+                // 答错
+                handleWrongAnswer();
+            }
+        }
+
+        // 处理答对
+        function handleCorrectAnswer(fishElement) {
+            score++;
+            combo++;
+
+            // 连击奖励
+            if (combo % 3 === 0) {
+                score++;
+                showFeedback('correct', `连击！+2分`);
+            } else {
+                showFeedback('correct', '正确！+1分');
+            }
+
+            showFlash('correct');
+            updateScoreDisplay();
+
+            // 移除被点击的小鱼
+            fishElement.remove();
+            fishElements = fishElements.filter(f => f !== fishElement);
+
+            // 显示新题目
+            setTimeout(() => {
+                showNewQuestion();
+            }, 500);
+        }
+
+        // 处理答错
+        function handleWrongAnswer() {
+            combo = 0;
+            showFeedback('wrong', '再试试！');
+            showFlash('wrong');
+            updateScoreDisplay();
+            resetTimer();
+        }
+
+        // 处理超时
+        function handleTimeout() {
+            combo = 0;
+            showFeedback('timeout', '时间到！');
+            showFlash('wrong');
+            updateScoreDisplay();
+            resetTimer();
+        }
+
+        // 显示反馈
+        function showFeedback(type, message) {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback ${type}`;
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+
+            setTimeout(() => {
+                feedback.remove();
+            }, 1500);
+        }
+
+        // 屏幕闪烁效果
+        function showFlash(type) {
+            const flash = document.createElement('div');
+            flash.className = `flash ${type}`;
+            document.body.appendChild(flash);
+
+            setTimeout(() => {
+                flash.remove();
+            }, 300);
+        }
+
+        // 更新分数显示
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = `得分: ${score}`;
+            comboDisplay.textContent = `连击: ${combo}`;
+        }
+
+        // 开始游戏
+        function startGame() {
+            startBtn.style.display = 'none';
+            gameStarted = true;
+            score = 0;
+            combo = 0;
+            updateScoreDisplay();
+
+            generateFishAnimation();
+            showNewQuestion();
+        }
+
+        // 事件监听
+        startBtn.addEventListener('click', startGame);
+
+        // 初始化
+        createBubbles();
+    </script>
+</body>
+</html>

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小鱼觅食大挑战</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(180deg, #87CEEB 0%, #4A90E2 50%, #2E5C8A 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 海底波纹动画 */
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: wave 3s ease-in-out infinite;
+        }
+
+        .wave:nth-child(1) {
+            top: 20%;
+            animation-delay: 0s;
+        }
+
+        .wave:nth-child(2) {
+            top: 40%;
+            animation-delay: 1s;
+        }
+
+        .wave:nth-child(3) {
+            top: 60%;
+            animation-delay: 2s;
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
+
+        /* 泡泡动画 */
+        .bubble {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: bubble 4s ease-in-out infinite;
+        }
+
+        @keyframes bubble {
+            0% {
+                transform: translateY(100vh) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* 开始按钮 */
+        #startBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 24px;
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        #startBtn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 主角小鱼 */
+        #playerFish {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            transition: all 0.5s;
+        }
+
+        .fish-body {
+            width: 80px;
+            height: 50px;
+            background: #FF6B6B;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            animation: fishSwim 2s ease-in-out infinite;
+        }
+
+        .fish-eye {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            top: 12px;
+            right: 15px;
+        }
+
+        .fish-eye::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: black;
+            border-radius: 50%;
+            top: 3px;
+            right: 2px;
+        }
+
+        .fish-tail {
+            position: absolute;
+            left: -20px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 25px solid #FF6B6B;
+            animation: tailWag 0.5s ease-in-out infinite;
+        }
+
+        .fish-fin {
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: #FF6B6B;
+            border-radius: 50% 50% 0 0;
+            top: -10px;
+            left: 30px;
+            transform: rotate(-30deg);
+        }
+
+        /* 能量值显示 */
+        #energyDisplay {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2E5C8A;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 能量虾 */
+        .shrimp {
+            position: absolute;
+            cursor: pointer;
+            z-index: 30;
+            transition: all 0.3s;
+        }
+
+        .shrimp-body {
+            width: 50px;
+            height: 30px;
+            background: #FFB347;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .shrimp-tail {
+            position: absolute;
+            right: -15px;
+            top: 5px;
+            width: 0;
+            height: 0;
+            border-left: 20px solid #FFB347;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        .shrimp-antenna {
+            position: absolute;
+            left: 10px;
+            top: -15px;
+            width: 2px;
+            height: 20px;
+            background: #FFB347;
+            transform: rotate(-30deg);
+        }
+
+        .shrimp-antenna:nth-child(2) {
+            left: 20px;
+            transform: rotate(30deg);
+        }
+
+        .shrimp:hover {
+            transform: scale(1.1);
+        }
+
+        /* 答题弹窗 */
+        #answerModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .question {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #2E5C8A;
+        }
+
+        .answer-input {
+            width: 150px;
+            padding: 10px;
+            font-size: 24px;
+            text-align: center;
+            border: 3px solid #4A90E2;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .num-btn {
+            padding: 15px;
+            font-size: 24px;
+            background: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .num-btn:hover {
+            background: #2E5C8A;
+        }
+
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+
+        .submit-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* 提示信息 */
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 300;
+            animation: feedback 1.5s ease-in-out forwards;
+        }
+
+        .feedback.correct {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .feedback.wrong {
+            background: #F44336;
+            color: white;
+        }
+
+        .feedback.tip {
+            background: #FF9800;
+            color: white;
+            font-size: 18px;
+        }
+
+        @keyframes feedback {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        /* 解锁提示 */
+        .unlock {
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px 50px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            border-radius: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            z-index: 400;
+            animation: unlock 2s ease-in-out forwards;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        @keyframes unlock {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3);
+            }
+            30% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* 小鱼皮肤 */
+        .skin-rainbow .fish-body {
+            background: linear-gradient(90deg, #FF6B6B, #FFB347, #4CAF50, #2196F3, #9C27B0);
+        }
+
+        .skin-rainbow .fish-tail {
+            border-right-color: #9C27B0;
+        }
+
+        .skin-rainbow .fish-fin {
+            background: #9C27B0;
+        }
+
+        .skin-spotted .fish-body {
+            background: #4CAF50;
+            position: relative;
+        }
+
+        .skin-spotted .fish-body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, #2196F3 5px, transparent 5px);
+            background-size: 20px 20px;
+            border-radius: inherit;
+        }
+
+        .skin-spotted .fish-tail {
+            border-right-color: #2196F3;
+        }
+
+        .skin-spotted .fish-fin {
+            background: #2196F3;
+        }
+
+        @keyframes fishSwim {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes tailWag {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(10deg);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .question {
+                font-size: 22px;
+            }
+
+            .answer-input {
+                width: 120px;
+                font-size: 20px;
+            }
+
+            .num-btn {
+                padding: 12px;
+                font-size: 20px;
+            }
+
+            .fish-body {
+                width: 60px;
+                height: 38px;
+            }
+
+            .shrimp-body {
+                width: 40px;
+                height: 24px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 波纹效果 -->
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+
+    <!-- 泡泡容器 -->
+    <div id="bubbles"></div>
+
+    <!-- 开始按钮 -->
+    <button id="startBtn">开始游戏</button>
+
+    <!-- 主角小鱼 -->
+    <div id="playerFish">
+        <div id="energyDisplay">能量: 0</div>
+        <div class="fish-body">
+            <div class="fish-eye"></div>
+            <div class="fish-tail"></div>
+            <div class="fish-fin"></div>
+        </div>
+    </div>
+
+    <!-- 能量虾容器 -->
+    <div id="shrimps"></div>
+
+    <!-- 答题弹窗 -->
+    <div id="answerModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="question" id="questionText">358 + 276 = ?</div>
+            <input type="text" class="answer-input" id="answerInput" readonly>
+            <div class="numpad">
+                <button class="num-btn" data-num="1">1</button>
+                <button class="num-btn" data-num="2">2</button>
+                <button class="num-btn" data-num="3">3</button>
+                <button class="num-btn" data-num="4">4</button>
+                <button class="num-btn" data-num="5">5</button>
+                <button class="num-btn" data-num="6">6</button>
+                <button class="num-btn" data-num="7">7</button>
+                <button class="num-btn" data-num="8">8</button>
+                <button class="num-btn" data-num="9">9</button>
+                <button class="num-btn" data-num="clear">清除</button>
+                <button class="num-btn" data-num="0">0</button>
+                <button class="num-btn" data-num="back">←</button>
+            </div>
+            <button class="submit-btn" id="submitBtn">提交答案</button>
+        </div>
+    </div>
+
+    <script>
+        // 题库
+        const questionBank = [
+            { question: "358 + 276", answer: 634, tip: "注意连续进位" },
+            { question: "723 - 456", answer: 267, tip: "注意借位" },
+            { question: "205 × 4", answer: 820, tip: "记住中间的0也要乘" },
+            { question: "456 + 389", answer: 845, tip: "个位进位后十位再进位" },
+            { question: "812 - 397", answer: 415, tip: "连续借位要小心" },
+            { question: "156 × 3", answer: 468, tip: "注意进位" },
+            { question: "678 + 234", answer: 912, tip: "检查每一位的进位" },
+            { question: "901 - 567", answer: 334, tip: "百位要借位" },
+            { question: "234 × 2", answer: 468, tip: "逐位相乘" },
+            { question: "543 + 278", answer: 821, tip: "注意进位" },
+            { question: "756 - 389", answer: 367, tip: "连续借位" },
+            { question: "312 × 3", answer: 936, tip: "注意进位" },
+            { question: "489 + 512", answer: 1001, tip: "结果是四位数" },
+            { question: "823 - 456", answer: 367, tip: "仔细计算每一位" },
+            { question: "178 × 4", answer: 712, tip: "注意进位" },
+            { question: "654 + 327", answer: 981, tip: "检查进位" },
+            { question: "902 - 345", answer: 557, tip: "百位借位" },
+            { question: "267 × 2", answer: 534, tip: "逐位相乘" },
+            { question: "578 + 423", answer: 1001, tip: "结果是四位数" },
+            { question: "834 - 567", answer: 267, tip: "连续借位" },
+            { question: "145 × 3", answer: 435, tip: "注意进位" },
+            { question: "723 + 189", answer: 912, tip: "检查进位" },
+            { question: "956 - 378", answer: 578, tip: "连续借位" },
+            { question: "234 × 4", answer: 936, tip: "注意进位" },
+            { question: "678 + 345", answer: 1023, tip: "结果是四位数" },
+            { question: "812 - 423", answer: 389, tip: "仔细计算" },
+            { question: "356 × 2", answer: 712, tip: "逐位相乘" },
+            { question: "567 + 234", answer: 801, tip: "检查进位" },
+            { question: "903 - 456", answer: 447, tip: "百位借位" },
+            { question: "189 × 3", answer: 567, tip: "注意进位" }
+        ];
+
+        // 游戏状态
+        let energy = 0;
+        let currentQuestion = null;
+        let currentShrimp = null;
+        let gameStarted = false;
+
+        // DOM元素
+        const startBtn = document.getElementById('startBtn');
+        const playerFish = document.getElementById('playerFish');
+        const energyDisplay = document.getElementById('energyDisplay');
+        const shrimpsContainer = document.getElementById('shrimps');
+        const answerModal = document.getElementById('answerModal');
+        const questionText = document.getElementById('questionText');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const closeBtn = document.querySelector('.close-btn');
+
+        // 音效（使用Web Audio API生成简单音效）
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            if (type === 'correct') {
+                oscillator.frequency.value = 523.25; // C5
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                oscillator.frequency.value = 196; // G3
+                oscillator.type = 'sawtooth';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'unlock') {
+                oscillator.frequency.value = 659.25; // E5
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+        }
+
+        // 创建泡泡
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            for (let i = 0; i < 10; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDelay = Math.random() * 4 + 's';
+                bubble.style.animationDuration = (3 + Math.random() * 2) + 's';
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // 创建能量虾
+        function createShrimp() {
+            if (!gameStarted) return;
+
+            const shrimp = document.createElement('div');
+            shrimp.className = 'shrimp';
+
+            const question = questionBank[Math.floor(Math.random() * questionBank.length)];
+            shrimp.dataset.question = JSON.stringify(question);
+
+            const body = document.createElement('div');
+            body.className = 'shrimp-body';
+            body.textContent = '?';
+
+            const tail = document.createElement('div');
+            tail.className = 'shrimp-tail';
+
+            const antenna1 = document.createElement('div');
+            antenna1.className = 'shrimp-antenna';
+
+            const antenna2 = document.createElement('div');
+            antenna2.className = 'shrimp-antenna';
+
+            shrimp.appendChild(antenna1);
+            shrimp.appendChild(antenna2);
+            shrimp.appendChild(body);
+            shrimp.appendChild(tail);
+
+            // 随机位置
+            const maxX = window.innerWidth - 100;
+            const maxY = window.innerHeight - 200;
+            shrimp.style.left = Math.random() * maxX + 'px';
+            shrimp.style.top = Math.random() * maxY + 'px';
+
+            // 随机游动动画
+            const duration = 5 + Math.random() * 5;
+            const delay = Math.random() * 2;
+            shrimp.style.animation = `shrimpSwim ${duration}s ease-in-out ${delay}s infinite`;
+
+            // 点击事件
+            shrimp.addEventListener('click', () => openQuestionModal(shrimp));
+
+            shrimpsContainer.appendChild(shrimp);
+
+            // 限制虾的数量
+            if (shrimpsContainer.children.length > 5) {
+                shrimpsContainer.removeChild(shrimpsContainer.firstChild);
+            }
+        }
+
+        // 打开答题弹窗
+        function openQuestionModal(shrimp) {
+            currentShrimp = shrimp;
+            const questionData = JSON.parse(shrimp.dataset.question);
+            currentQuestion = questionData;
+
+            questionText.textContent = questionData.question + ' = ?';
+            answerInput.value = '';
+            answerModal.style.display = 'flex';
+        }
+
+        // 关闭答题弹窗
+        function closeAnswerModal() {
+            answerModal.style.display = 'none';
+            currentQuestion = null;
+            currentShrimp = null;
+        }
+
+        // 显示反馈
+        function showFeedback(type, message) {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback ${type}`;
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+
+            setTimeout(() => {
+                feedback.remove();
+            }, 1500);
+        }
+
+        // 显示解锁提示
+        function showUnlockMessage(skinName) {
+            const unlock = document.createElement('div');
+            unlock.className = 'unlock';
+            unlock.textContent = `🎉 解锁新皮肤：${skinName}！`;
+            document.body.appendChild(unlock);
+
+            setTimeout(() => {
+                unlock.remove();
+            }, 2000);
+        }
+
+        // 更新能量值
+        function updateEnergy() {
+            energyDisplay.textContent = `能量: ${energy}`;
+
+            // 检查解锁皮肤
+            if (energy === 5) {
+                playerFish.classList.add('skin-rainbow');
+                showUnlockMessage('彩虹鱼');
+                playSound('unlock');
+            } else if (energy === 10) {
+                playerFish.classList.remove('skin-rainbow');
+                playerFish.classList.add('skin-spotted');
+                showUnlockMessage('斑点鱼');
+                playSound('unlock');
+            } else if (energy === 15) {
+                playerFish.classList.remove('skin-spotted');
+                playerFish.classList.add('skin-rainbow', 'skin-spotted');
+                showUnlockMessage('彩虹斑点鱼');
+                playSound('unlock');
+            }
+        }
+
+        // 提交答案
+        function submitAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+
+            if (isNaN(userAnswer)) {
+                showFeedback('wrong', '请输入数字！');
+                return;
+            }
+
+            if (userAnswer === currentQuestion.answer) {
+                // 答对
+                playSound('correct');
+                showFeedback('correct', '真棒！');
+                energy++;
+                updateEnergy();
+
+                // 移除虾
+                if (currentShrimp) {
+                    currentShrimp.remove();
+                }
+
+                closeAnswerModal();
+            } else {
+                // 答错
+                playSound('wrong');
+                showFeedback('wrong', currentQuestion.tip);
+                answerInput.value = '';
+            }
+        }
+
+        // 数字键盘事件
+        document.querySelectorAll('.num-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const num = e.target.dataset.num;
+
+                if (num === 'clear') {
+                    answerInput.value = '';
+                } else if (num === 'back') {
+                    answerInput.value = answerInput.value.slice(0, -1);
+                } else {
+                    answerInput.value += num;
+                }
+            });
+        });
+
+        // 事件监听
+        startBtn.addEventListener('click', () => {
+            startBtn.style.display = 'none';
+            gameStarted = true;
+
+            // 初始化音频上下文
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            // 创建初始虾
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createShrimp(), i * 1000);
+            }
+
+            // 持续创建虾
+            setInterval(() => {
+                if (gameStarted) {
+                    createShrimp();
+                }
+            }, 3000);
+        });
+
+        submitBtn.addEventListener('click', submitAnswer);
+
+        closeBtn.addEventListener('click', closeAnswerModal);
+
+        answerModal.addEventListener('click', (e) => {
+            if (e.target === answerModal) {
+                closeAnswerModal();
+            }
+        });
+
+        // 键盘支持
+        document.addEventListener('keydown', (e) => {
+            if (answerModal.style.display === 'flex') {
+                if (e.key >= '0' && e.key <= '9') {
+                    answerInput.value += e.key;
+                } else if (e.key === 'Backspace') {
+                    answerInput.value = answerInput.value.slice(0, -1);
+                } else if (e.key === 'Enter') {
+                    submitAnswer();
+                } else if (e.key === 'Escape') {
+                    closeAnswerModal();
+                }
+            }
+        });
+
+        // 添加虾的游动动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shrimpSwim {
+                0% {
+                    transform: translateX(0) translateY(0) rotate(0deg);
+                }
+                25% {
+                    transform: translateX(50px) translateY(-30px) rotate(5deg);
+                }
+                50% {
+                    transform: translateX(0) translateY(0) rotate(0deg);
+                }
+                75% {
+                    transform: translateX(-50px) translateY(30px) rotate(-5deg);
+                }
+                100% {
+                    transform: translateX(0) translateY(0) rotate(0deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 初始化
+        createBubbles();
+    </script>
+</body>
+</html>
