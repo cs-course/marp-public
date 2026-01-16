@@ -143,6 +143,52 @@
             right: 2px;
         }
 
+        /* 小鱼嘴巴 */
+        .fish-mouth {
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            background: transparent;
+            border: 3px solid #333;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            top: 30px;
+            right: 8px;
+            transition: all 0.3s;
+        }
+
+        /* 开心表情 */
+        .fish.happy .fish-mouth {
+            width: 15px;
+            height: 8px;
+            border-radius: 0 0 15px 15px;
+            top: 28px;
+            right: 5px;
+            animation: happyMouth 0.5s ease-in-out;
+        }
+
+        .fish.happy .fish-eye::after {
+            animation: happyEye 0.5s ease-in-out;
+        }
+
+        @keyframes happyMouth {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes happyEye {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
         .fish-tail {
             position: absolute;
             left: -20px;
@@ -230,8 +276,50 @@
             transform: rotate(30deg);
         }
 
+        /* 难度等级2 - 中等大小 */
+        .shrimp.difficulty-2 {
+            transform: scale(1.3);
+        }
+
+        .shrimp.difficulty-2 .shrimp-body {
+            background: #FFA500;
+        }
+
+        .shrimp.difficulty-2 .shrimp-tail {
+            border-left-color: #FFA500;
+        }
+
+        .shrimp.difficulty-2 .shrimp-antenna {
+            background: #FFA500;
+        }
+
+        /* 难度等级3 - 最大 */
+        .shrimp.difficulty-3 {
+            transform: scale(1.6);
+        }
+
+        .shrimp.difficulty-3 .shrimp-body {
+            background: #FF8C00;
+        }
+
+        .shrimp.difficulty-3 .shrimp-tail {
+            border-left-color: #FF8C00;
+        }
+
+        .shrimp.difficulty-3 .shrimp-antenna {
+            background: #FF8C00;
+        }
+
         .shrimp:hover {
             transform: scale(1.1);
+        }
+
+        .shrimp.difficulty-2:hover {
+            transform: scale(1.4);
+        }
+
+        .shrimp.difficulty-3:hover {
+            transform: scale(1.7);
         }
 
         /* 答题弹窗 */
@@ -496,10 +584,11 @@
     <button id="startBtn">开始游戏</button>
 
     <!-- 主角小鱼 -->
-    <div id="playerFish">
+    <div id="playerFish" class="fish">
         <div id="energyDisplay">能量: 0</div>
         <div class="fish-body">
             <div class="fish-eye"></div>
+            <div class="fish-mouth"></div>
             <div class="fish-tail"></div>
             <div class="fish-fin"></div>
         </div>
@@ -533,38 +622,46 @@
     </div>
 
     <script>
-        // 题库
+        // 题库 - 按难度递进排列
+        // 第一阶段（1-10题）：二年级基础 - 100以内不进位/不退位加减法、表内乘法 - 难度等级1
+        // 第二阶段（11-20题）：二年级进阶 - 100以内进位/退位加减法、简单乘法 - 难度等级2
+        // 第三阶段（21-30题）：三年级上学期 - 万以内加减法、多位数乘一位数 - 难度等级3
         const questionBank = [
-            { question: "358 + 276", answer: 634, tip: "注意连续进位" },
-            { question: "723 - 456", answer: 267, tip: "注意借位" },
-            { question: "205 × 4", answer: 820, tip: "记住中间的0也要乘" },
-            { question: "456 + 389", answer: 845, tip: "个位进位后十位再进位" },
-            { question: "812 - 397", answer: 415, tip: "连续借位要小心" },
-            { question: "156 × 3", answer: 468, tip: "注意进位" },
-            { question: "678 + 234", answer: 912, tip: "检查每一位的进位" },
-            { question: "901 - 567", answer: 334, tip: "百位要借位" },
-            { question: "234 × 2", answer: 468, tip: "逐位相乘" },
-            { question: "543 + 278", answer: 821, tip: "注意进位" },
-            { question: "756 - 389", answer: 367, tip: "连续借位" },
-            { question: "312 × 3", answer: 936, tip: "注意进位" },
-            { question: "489 + 512", answer: 1001, tip: "结果是四位数" },
-            { question: "823 - 456", answer: 367, tip: "仔细计算每一位" },
-            { question: "178 × 4", answer: 712, tip: "注意进位" },
-            { question: "654 + 327", answer: 981, tip: "检查进位" },
-            { question: "902 - 345", answer: 557, tip: "百位借位" },
-            { question: "267 × 2", answer: 534, tip: "逐位相乘" },
-            { question: "578 + 423", answer: 1001, tip: "结果是四位数" },
-            { question: "834 - 567", answer: 267, tip: "连续借位" },
-            { question: "145 × 3", answer: 435, tip: "注意进位" },
-            { question: "723 + 189", answer: 912, tip: "检查进位" },
-            { question: "956 - 378", answer: 578, tip: "连续借位" },
-            { question: "234 × 4", answer: 936, tip: "注意进位" },
-            { question: "678 + 345", answer: 1023, tip: "结果是四位数" },
-            { question: "812 - 423", answer: 389, tip: "仔细计算" },
-            { question: "356 × 2", answer: 712, tip: "逐位相乘" },
-            { question: "567 + 234", answer: 801, tip: "检查进位" },
-            { question: "903 - 456", answer: 447, tip: "百位借位" },
-            { question: "189 × 3", answer: 567, tip: "注意进位" }
+            // 第一阶段：二年级基础（1-10题）- 难度等级1
+            { question: "23 + 45", answer: 68, tip: "个位和十位分别相加", difficulty: 1 },
+            { question: "78 - 32", answer: 46, tip: "个位和十位分别相减", difficulty: 1 },
+            { question: "56 + 34", answer: 90, tip: "注意对齐数位", difficulty: 1 },
+            { question: "87 - 54", answer: 33, tip: "从个位开始减", difficulty: 1 },
+            { question: "3 × 7", answer: 21, tip: "用乘法口诀", difficulty: 1 },
+            { question: "4 × 8", answer: 32, tip: "用乘法口诀", difficulty: 1 },
+            { question: "6 × 9", answer: 54, tip: "用乘法口诀", difficulty: 1 },
+            { question: "5 × 7", answer: 35, tip: "用乘法口诀", difficulty: 1 },
+            { question: "23 × 2", answer: 46, tip: "分别用2去乘个位和十位", difficulty: 1 },
+            { question: "32 × 3", answer: 96, tip: "分别用3去乘个位和十位", difficulty: 1 },
+
+            // 第二阶段：二年级进阶（11-20题）- 难度等级2
+            { question: "47 + 38", answer: 85, tip: "个位满十要进位", difficulty: 2 },
+            { question: "65 - 28", answer: 37, tip: "个位不够减要借位", difficulty: 2 },
+            { question: "56 + 49", answer: 105, tip: "结果是三位数", difficulty: 2 },
+            { question: "72 - 37", answer: 35, tip: "十位也要借位", difficulty: 2 },
+            { question: "38 + 45", answer: 83, tip: "注意进位", difficulty: 2 },
+            { question: "81 - 26", answer: 55, tip: "从个位开始减", difficulty: 2 },
+            { question: "27 × 3", answer: 81, tip: "个位满十要进位", difficulty: 2 },
+            { question: "45 × 2", answer: 90, tip: "分别乘个位和十位", difficulty: 2 },
+            { question: "63 + 29", answer: 92, tip: "检查进位", difficulty: 2 },
+            { question: "94 - 38", answer: 56, tip: "连续借位要小心", difficulty: 2 },
+
+            // 第三阶段：三年级上学期（21-30题）- 难度等级3
+            { question: "358 + 276", answer: 634, tip: "注意连续进位", difficulty: 3 },
+            { question: "723 - 456", answer: 267, tip: "注意借位", difficulty: 3 },
+            { question: "205 × 4", answer: 820, tip: "记住中间的0也要乘", difficulty: 3 },
+            { question: "456 + 389", answer: 845, tip: "个位进位后十位再进位", difficulty: 3 },
+            { question: "812 - 397", answer: 415, tip: "连续借位要小心", difficulty: 3 },
+            { question: "156 × 3", answer: 468, tip: "注意进位", difficulty: 3 },
+            { question: "678 + 234", answer: 912, tip: "检查每一位的进位", difficulty: 3 },
+            { question: "901 - 567", answer: 334, tip: "百位要借位", difficulty: 3 },
+            { question: "178 × 4", answer: 712, tip: "注意进位", difficulty: 3 },
+            { question: "654 + 327", answer: 981, tip: "检查进位", difficulty: 3 }
         ];
 
         // 游戏状态
@@ -572,6 +669,7 @@
         let currentQuestion = null;
         let currentShrimp = null;
         let gameStarted = false;
+        let currentQuestionIndex = 0; // 当前题目索引，用于难度递进
 
         // DOM元素
         const startBtn = document.getElementById('startBtn');
@@ -638,8 +736,15 @@
             const shrimp = document.createElement('div');
             shrimp.className = 'shrimp';
 
-            const question = questionBank[Math.floor(Math.random() * questionBank.length)];
+            // 按顺序从题库中取题，实现难度递进
+            const question = questionBank[currentQuestionIndex];
             shrimp.dataset.question = JSON.stringify(question);
+
+            // 根据难度等级添加对应的class
+            shrimp.classList.add(`difficulty-${question.difficulty}`);
+
+            // 更新题目索引，循环使用题库
+            currentQuestionIndex = (currentQuestionIndex + 1) % questionBank.length;
 
             const body = document.createElement('div');
             body.className = 'shrimp-body';
@@ -761,6 +866,11 @@
                 energy++;
                 updateEnergy();
 
+                // 如果是难题（难度等级2或3），显示开心表情
+                if (currentQuestion.difficulty >= 2) {
+                    showHappyExpression();
+                }
+
                 // 移除虾
                 if (currentShrimp) {
                     currentShrimp.remove();
@@ -773,6 +883,16 @@
                 showFeedback('wrong', currentQuestion.tip);
                 answerInput.value = '';
             }
+        }
+
+        // 显示开心表情
+        function showHappyExpression() {
+            playerFish.classList.add('happy');
+
+            // 1.5秒后移除开心表情
+            setTimeout(() => {
+                playerFish.classList.remove('happy');
+            }, 1500);
         }
 
         // 数字键盘事件
