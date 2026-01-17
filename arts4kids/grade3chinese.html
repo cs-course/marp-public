@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三年级看拼音写词语练习 - arts4kids</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #F5A623;
+            --success-color: #7ED321;
+            --error-color: #D0021B;
+            --background-color: #F8F9FA;
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #357ABD;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #E0951F;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #6BC11C;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #B00018;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .menu-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .menu-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .lesson-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .lesson-item {
+            background: var(--background-color);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .lesson-item:hover {
+            border-color: var(--primary-color);
+            background: #E8F4FD;
+        }
+
+        .lesson-item.completed {
+            background: #E8F5E9;
+            border-color: var(--success-color);
+        }
+
+        .lesson-item h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .lesson-item p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .game-area {
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .pinyin-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--background-color);
+            border-radius: 8px;
+            letter-spacing: 2px;
+        }
+
+        .input-area {
+            margin: 20px 0;
+        }
+
+        .input-area input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            font-size: 24px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .input-area input.correct {
+            border-color: var(--success-color);
+            background: #E8F5E9;
+        }
+
+        .input-area input.wrong {
+            border-color: var(--error-color);
+            background: #FFEBEE;
+        }
+
+        .feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            background: #E8F5E9;
+            color: var(--success-color);
+        }
+
+        .feedback.wrong {
+            display: block;
+            background: #FFEBEE;
+            color: var(--error-color);
+        }
+
+        .hint-area {
+            margin: 20px 0;
+            min-height: 30px;
+        }
+
+        .hint-text {
+            color: var(--secondary-color);
+            font-size: 16px;
+        }
+
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-stat {
+            padding: 20px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .result-stat .label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .result-stat .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .wrong-words-list {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .wrong-words-list h3 {
+            margin-bottom: 15px;
+            color: var(--error-color);
+        }
+
+        .wrong-word-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #FFEBEE;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wrong-word-item .pinyin {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .wrong-word-item .answer {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        .achievements {
+            margin-top: 30px;
+        }
+
+        .achievements h3 {
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-item {
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: 8px;
+            text-align: center;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item.unlocked {
+            opacity: 1;
+            background: linear-gradient(135deg, #FFE082 0%, #FFD54F 100%);
+        }
+
+        .achievement-item h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .achievement-item p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .settings-panel {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item label {
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .setting-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .setting-item select {
+            padding: 8px 12px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen.active {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .pinyin-display {
+                font-size: 24px;
+            }
+
+            .input-area input {
+                font-size: 20px;
+            }
+
+            .result-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <h1>🎨 arts4kids</h1>
+            <p>三年级看拼音写词语练习</p>
+        </div>
+
+        <div class="content">
+            <!-- 主菜单 -->
+            <div id="menu-screen" class="screen active">
+                <div class="menu-grid">
+                    <div class="menu-card" onclick="startLessonMode()">
+                        <h3>📚 闯关练习</h3>
+                        <p>按课文顺序，逐课闯关</p>
+                    </div>
+                    <div class="menu-card" onclick="startChallengeMode()">
+                        <h3>⚡ 挑战赛</h3>
+                        <p>随机抽取，限时挑战</p>
+                    </div>
+                    <div class="menu-card" onclick="startWrongWordsMode()">
+                        <h3>📝 错题本</h3>
+                        <p>针对性复习薄弱环节</p>
+                    </div>
+                    <div class="menu-card" onclick="showSettings()">
+                        <h3>⚙️ 设置</h3>
+                        <p>音效、难度等设置</p>
+                    </div>
+                </div>
+
+                <div class="achievements" style="margin-top: 30px;">
+                    <h3>🏆 我的成就</h3>
+                    <div class="achievement-grid" id="achievement-display">
+                        <!-- 成就动态加载 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 课文选择 -->
+            <div id="lesson-select-screen" class="screen">
+                <button class="btn btn-secondary back-btn" onclick="showMenu()">← 返回</button>
+                <h2>选择课文</h2>
+                <div class="lesson-list" id="lesson-list">
+                    <!-- 课文列表动态加载 -->
+                </div>
+            </div>
+
+            <!-- 游戏界面 -->
+            <div id="game-screen" class="screen">
+                <button class="btn btn-secondary back-btn" onclick="confirmExit()">← 返回</button>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="label">当前课文</div>
+                        <div class="value" id="current-lesson">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">得分</div>
+                        <div class="value" id="current-score">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">时间</div>
+                        <div class="value" id="current-time">00:00</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <div class="game-area">
+                    <div class="pinyin-display" id="pinyin-display">-</div>
+
+                    <div class="input-area">
+                        <input type="text" id="word-input" placeholder="请输入汉字" autocomplete="off">
+                    </div>
+
+                    <div class="hint-area">
+                        <span class="hint-text" id="hint-text"></span>
+                    </div>
+
+                    <div class="feedback" id="feedback"></div>
+
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="useHint()">💡 提示</button>
+                        <button class="btn btn-primary" onclick="submitAnswer()">✓ 提交</button>
+                        <button class="btn btn-danger" onclick="skipWord()">✗ 跳过</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <span style="font-size: 14px; color: #666;">进度: <span id="progress-text">0/0</span></span>
+                </div>
+            </div>
+
+            <!-- 结果界面 -->
+            <div id="result-screen" class="screen">
+                <h2>🎉 练习完成！</h2>
+                <div class="result-score" id="final-score">0</div>
+
+                <div class="result-stats">
+                    <div class="result-stat">
+                        <div class="label">正确</div>
+                        <div class="value" id="result-correct">0</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="label">错误</div>
+                        <div class="value" id="result-wrong">0</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="label">用时</div>
+                        <div class="value" id="result-time">00:00</div>
+                    </div>
+                </div>
+
+                <div class="wrong-words-list" id="wrong-words-list" style="display: none;">
+                    <h3>❌ 错题回顾</h3>
+                    <div id="wrong-words-container"></div>
+                </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="retryWrongWords()">重做错题</button>
+                    <button class="btn btn-success" onclick="showMenu()">返回主页</button>
+                </div>
+            </div>
+
+            <!-- 设置界面 -->
+            <div id="settings-screen" class="screen">
+                <button class="btn btn-secondary back-btn" onclick="showMenu()">← 返回</button>
+                <h2>⚙️ 设置</h2>
+
+                <div class="settings-panel">
+                    <div class="setting-item">
+                        <label>🔊 音效</label>
+                        <input type="checkbox" id="sound-toggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label>📊 显示进度</label>
+                        <input type="checkbox" id="progress-toggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label>🎯 难度</label>
+                        <select id="difficulty-select">
+                            <option value="1">简单</option>
+                            <option value="2" selected>中等</option>
+                            <option value="3">困难</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn btn-danger" onclick="clearAllData()">清除所有数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 词库数据 - 27课完整词库
+        const wordBank = [
+            {
+                lessonId: 1,
+                lessonTitle: "大青树下的小学",
+                words: [
+                    { pinyin: "dà qīng shù xià de xiǎo xué", word: "大青树下的小学", difficulty: 1 },
+                    { pinyin: "huān chàng", word: "欢唱", difficulty: 1 },
+                    { pinyin: "zhāo yáng", word: "朝阳", difficulty: 1 },
+                    { pinyin: "fú zhuāng", word: "服装", difficulty: 2 },
+                    { pinyin: "dǎ ban", word: "打扮", difficulty: 1 },
+                    { pinyin: "cǎi hóng", word: "彩虹", difficulty: 1 },
+                    { pinyin: "jìng lǐ", word: "敬礼", difficulty: 2 },
+                    { pinyin: "zhú yè", word: "竹叶", difficulty: 1 },
+                    { pinyin: "fènɡ wěi zhú", word: "凤尾竹", difficulty: 2 },
+                    { pinyin: "jié bái", word: "洁白", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 2,
+                lessonTitle: "花的学校",
+                words: [
+                    { pinyin: "huā de xué xiào", word: "花的学校", difficulty: 1 },
+                    { pinyin: "fēng chuī", word: "风吹", difficulty: 1 },
+                    { pinyin: "kuáng fēng", word: "狂风", difficulty: 2 },
+                    { pinyin: "zhèn yǔ", word: "阵雨", difficulty: 2 },
+                    { pinyin: "luò dì", word: "落地", difficulty: 1 },
+                    { pinyin: "huā bàn", word: "花瓣", difficulty: 1 },
+                    { pinyin: "fáng jiān", word: "房间", difficulty: 1 },
+                    { pinyin: "xīn xǐ", word: "欣喜", difficulty: 2 },
+                    { pinyin: "zhāo hu", word: "招呼", difficulty: 1 },
+                    { pinyin: "kāi fàng", word: "开放", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 3,
+                lessonTitle: "不懂就要问",
+                words: [
+                    { pinyin: "bù dǒng jiù yào wèn", word: "不懂就要问", difficulty: 1 },
+                    { pinyin: "sī shú", word: "私塾", difficulty: 2 },
+                    { pinyin: "lín shí", word: "临时", difficulty: 1 },
+                    { pinyin: "zhǔn xǔ", word: "允许", difficulty: 2 },
+                    { pinyin: "guī ju", word: "规矩", difficulty: 1 },
+                    { pinyin: "hòu huǐ", word: "后悔", difficulty: 1 },
+                    { pinyin: "xué wèn", word: "学问", difficulty: 1 },
+                    { pinyin: "liàn xí", word: "练习", difficulty: 1 },
+                    { pinyin: "jì lù", word: "记录", difficulty: 1 },
+                    { pinyin: "zhù yì", word: "注意", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 4,
+                lessonTitle: "古诗三首",
+                words: [
+                    { pinyin: "shān xíng", word: "山行", difficulty: 1 },
+                    { pinyin: "zèng liú jǐng wén", word: "赠刘景文", difficulty: 2 },
+                    { pinyin: "yè shū suǒ jiàn", word: "夜书所见", difficulty: 2 },
+                    { pinyin: "hán shān", word: "寒山", difficulty: 1 },
+                    { pinyin: "shí jìng", word: "石径", difficulty: 1 },
+                    { pinyin: "bái yún", word: "白云", difficulty: 1 },
+                    { pinyin: "shuāng yè", word: "霜叶", difficulty: 1 },
+                    { pinyin: "jú huā", word: "菊花", difficulty: 1 },
+                    { pinyin: "jiāng hú", word: "江湖", difficulty: 1 },
+                    { pinyin: "xiāo xiāo", word: "萧萧", difficulty: 2 }
+                ]
+            },
+            {
+                lessonId: 5,
+                lessonTitle: "铺满金色巴掌的水泥道",
+                words: [
+                    { pinyin: "pū mǎn jīn sè bā zhang de shuǐ ní dào", word: "铺满金色巴掌的水泥道", difficulty: 1 },
+                    { pinyin: "shuǐ ní dào", word: "水泥道", difficulty: 1 },
+                    { pinyin: "jīn sè", word: "金色", difficulty: 1 },
+                    { pinyin: "bā zhang", word: "巴掌", difficulty: 1 },
+                    { pinyin: "yuán yè", word: "雨衣", difficulty: 1 },
+                    { pinyin: "luò yè", word: "落叶", difficulty: 1 },
+                    { pinyin: "shuǐ jīng", word: "水晶", difficulty: 1 },
+                    { pinyin: "jǐn yún", word: "锦云", difficulty: 2 },
+                    { pinyin: "guāng liàng", word: "光亮", difficulty: 1 },
+                    { pinyin: "míng liàng", word: "明亮", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 6,
+                lessonTitle: "秋天的雨",
+                words: [
+                    { pinyin: "qiū tiān de yǔ", word: "秋天的雨", difficulty: 1 },
+                    { pinyin: "yán sè", word: "颜色", difficulty: 1 },
+                    { pinyin: "fēng shōu", word: "丰收", difficulty: 1 },
+                    { pinyin: "xiāng wèi", word: "香味", difficulty: 1 },
+                    { pinyin: "jīn huáng", word: "金黄", difficulty: 1 },
+                    { pinyin: "yín huáng", word: "银黄", difficulty: 2 },
+                    { pinyin: "hóng sè", word: "红色", difficulty: 1 },
+                    { pinyin: "huáng sè", word: "黄色", difficulty: 1 },
+                    { pinyin: "chéng sè", word: "橙色", difficulty: 1 },
+                    { pinyin: "zǐ sè", word: "紫色", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 7,
+                lessonTitle: "听听，秋的声音",
+                words: [
+                    { pinyin: "tīng tīng qiū de shēng yīn", word: "听听，秋的声音", difficulty: 1 },
+                    { pinyin: "shēng yīn", word: "声音", difficulty: 1 },
+                    { pinyin: "dào bié", word: "道别", difficulty: 1 },
+                    { pinyin: "gē shēng", word: "歌声", difficulty: 1 },
+                    { pinyin: "yīn yuè", word: "音乐", difficulty: 1 },
+                    { pinyin: "qīn qiè", word: "亲切", difficulty: 2 },
+                    { pinyin: "wēn nuǎn", word: "温暖", difficulty: 1 },
+                    { pinyin: "gǎn jī", word: "感激", difficulty: 1 },
+                    { pinyin: "zhù fú", word: "祝福", difficulty: 1 },
+                    { pinyin: "huān lè", word: "欢乐", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 8,
+                lessonTitle: "卖火柴的小女孩",
+                words: [
+                    { pinyin: "mài huǒ chái de xiǎo nǚ hái", word: "卖火柴的小女孩", difficulty: 1 },
+                    { pinyin: "huǒ chái", word: "火柴", difficulty: 1 },
+                    { pinyin: "hán lěng", word: "寒冷", difficulty: 1 },
+                    { pinyin: "jī è", word: "饥饿", difficulty: 1 },
+                    { pinyin: "kě wàng", word: "渴望", difficulty: 2 },
+                    { pinyin: "wēn nuǎn", word: "温暖", difficulty: 1 },
+                    { pinyin: "xìng fú", word: "幸福", difficulty: 1 },
+                    { pinyin: "shèng dàn jié", word: "圣诞节", difficulty: 2 },
+                    { pinyin: "lǐ wù", word: "礼物", difficulty: 1 },
+                    { pinyin: "měi mèng", word: "美梦", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 9,
+                lessonTitle: "那一定会很好",
+                words: [
+                    { pinyin: "nà yí dìng huì hěn hǎo", word: "那一定会很好", difficulty: 1 },
+                    { pinyin: "zhǒng zi", word: "种子", difficulty: 1 },
+                    { pinyin: "shù mù", word: "树木", difficulty: 1 },
+                    { pinyin: "fáng zi", word: "房子", difficulty: 1 },
+                    { pinyin: "chē zi", word: "车子", difficulty: 1 },
+                    { pinyin: "yī zi", word: "椅子", difficulty: 1 },
+                    { pinyin: "zhuō zi", word: "桌子", difficulty: 1 },
+                    { pinyin: "chuāng hu", word: "窗户", difficulty: 1 },
+                    { pinyin: "mén", word: "门", difficulty: 1 },
+                    { pinyin: "qiáng", word: "墙", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 10,
+                lessonTitle: "在牛肚子里旅行",
+                words: [
+                    { pinyin: "zài niú dù zi lǐ lǚ xíng", word: "在牛肚子里旅行", difficulty: 1 },
+                    { pinyin: "lǚ xíng", word: "旅行", difficulty: 1 },
+                    { pinyin: "péng you", word: "朋友", difficulty: 1 },
+                    { pinyin: "bāng zhù", word: "帮助", difficulty: 1 },
+                    { pinyin: "yǒng qì", word: "勇气", difficulty: 1 },
+                    { pinyin: "zhì huì", word: "智慧", difficulty: 2 },
+                    { pinyin: "tuán jié", word: "团结", difficulty: 1 },
+                    { pinyin: "hù xiāng", word: "互相", difficulty: 1 },
+                    { pinyin: "guān xīn", word: "关心", difficulty: 1 },
+                    { pinyin: "ài hù", word: "爱护", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 11,
+                lessonTitle: "一块奶酪",
+                words: [
+                    { pinyin: "yí kuài nǎi lào", word: "一块奶酪", difficulty: 1 },
+                    { pinyin: "nǎi lào", word: "奶酪", difficulty: 1 },
+                    { pinyin: "mǎ yǐ", word: "蚂蚁", difficulty: 1 },
+                    { pinyin: "duì wu", word: "队伍", difficulty: 1 },
+                    { pinyin: "lǐng dǎo", word: "领导", difficulty: 2 },
+                    { pinyin: "jì lǜ", word: "纪律", difficulty: 2 },
+                    { pinyin: "fēn pèi", word: "分配", difficulty: 2 },
+                    { pinyin: "gōng píng", word: "公平", difficulty: 1 },
+                    { pinyin: "hé zuò", word: "合作", difficulty: 1 },
+                    { pinyin: "fèn xiǎng", word: "分享", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 12,
+                lessonTitle: "总也倒不了的老屋",
+                words: [
+                    { pinyin: "zǒng yě dǎo bù liǎo de lǎo wū", word: "总也倒不了的老屋", difficulty: 1 },
+                    { pinyin: "lǎo wū", word: "老屋", difficulty: 1 },
+                    { pinyin: "dǎo xià", word: "倒下", difficulty: 1 },
+                    { pinyin: "zhù zài", word: "住在", difficulty: 1 },
+                    { pinyin: "xiǎo māo", word: "小猫", difficulty: 1 },
+                    { pinyin: "lǎo mǔ jī", word: "老母鸡", difficulty: 1 },
+                    { pinyin: "xiǎo zhū", word: "小猪", difficulty: 1 },
+                    { pinyin: "zhù rén", word: "主人", difficulty: 1 },
+                    { pinyin: "kè rén", word: "客人", difficulty: 1 },
+                    { pinyin: "péng you", word: "朋友", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 13,
+                lessonTitle: "胡萝卜先生的长胡子",
+                words: [
+                    { pinyin: "hú luó bo xiān sheng de cháng hú zi", word: "胡萝卜先生的长胡子", difficulty: 1 },
+                    { pinyin: "hú luó bo", word: "胡萝卜", difficulty: 1 },
+                    { pinyin: "hú zi", word: "胡子", difficulty: 1 },
+                    { pinyin: "cháng", word: "长", difficulty: 1 },
+                    { pinyin: "duǎn", word: "短", difficulty: 1 },
+                    { pinyin: "xiǎo niǎo", word: "小鸟", difficulty: 1 },
+                    { pinyin: "xiǎo sōng shǔ", word: "小松鼠", difficulty: 2 },
+                    { pinyin: "xiǎo tù zi", word: "小兔子", difficulty: 1 },
+                    { pinyin: "xiǎo hóu zi", word: "小猴子", difficulty: 1 },
+                    { pinyin: "hǎo péng you", word: "好朋友", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 14,
+                lessonTitle: "小狗学叫",
+                words: [
+                    { pinyin: "xiǎo gǒu xué jiào", word: "小狗学叫", difficulty: 1 },
+                    { pinyin: "xiǎo gǒu", word: "小狗", difficulty: 1 },
+                    { pinyin: "xué xí", word: "学习", difficulty: 1 },
+                    { pinyin: "jiào", word: "叫", difficulty: 1 },
+                    { pinyin: "gōng jī", word: "公鸡", difficulty: 1 },
+                    { pinyin: "māo", word: "猫", difficulty: 1 },
+                    { pinyin: "niú", word: "牛", difficulty: 1 },
+                    { pinyin: "yáng", word: "羊", difficulty: 1 },
+                    { pinyin: "shēng yīn", word: "声音", difficulty: 1 },
+                    { pinyin: "jiào shēng", word: "叫声", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 15,
+                lessonTitle: "搭船的鸟",
+                words: [
+                    { pinyin: "dā chuán de niǎo", word: "搭船的鸟", difficulty: 1 },
+                    { pinyin: "dā chuán", word: "搭船", difficulty: 1 },
+                    { pinyin: "cuì niǎo", word: "翠鸟", difficulty: 1 },
+                    { pinyin: "yǔ máo", word: "羽毛", difficulty: 1 },
+                    { pinyin: "zuǐ ba", word: "嘴巴", difficulty: 1 },
+                    { pinyin: "yǎn jing", word: "眼睛", difficulty: 1 },
+                    { pinyin: "chì bǎng", word: "翅膀", difficulty: 1 },
+                    { pinyin: "fēi xíng", word: "飞行", difficulty: 1 },
+                    { pinyin: "zhuō yú", word: "捉鱼", difficulty: 1 },
+                    { pinyin: "měi lì", word: "美丽", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 16,
+                lessonTitle: "金色的草地",
+                words: [
+                    { pinyin: "jīn sè de cǎo dì", word: "金色的草地", difficulty: 1 },
+                    { pinyin: "cǎo dì", word: "草地", difficulty: 1 },
+                    { pinyin: "jīn sè", word: "金色", difficulty: 1 },
+                    { pinyin: "lǜ sè", word: "绿色", difficulty: 1 },
+                    { pinyin: "huā duǒ", word: "花朵", difficulty: 1 },
+                    { pinyin: "huā bàn", word: "花瓣", difficulty: 1 },
+                    { pinyin: "zhǎng kāi", word: "张开", difficulty: 1 },
+                    { pinyin: "hé shàng", word: "合上", difficulty: 1 },
+                    { pinyin: "guān chá", word: "观察", difficulty: 2 },
+                    { pinyin: "fā xiàn", word: "发现", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 17,
+                lessonTitle: "古诗三首",
+                words: [
+                    { pinyin: "wàng tiān mén shān", word: "望天门山", difficulty: 1 },
+                    { pinyin: "yǐn hú shàng chū qíng hòu yǔ", word: "饮湖上初晴后雨", difficulty: 2 },
+                    { pinyin: "wàng dòng tíng", word: "望洞庭", difficulty: 1 },
+                    { pinyin: "tiān mén", word: "天门", difficulty: 1 },
+                    { pinyin: "cháng jiāng", word: "长江", difficulty: 1 },
+                    { pinyin: "xī hú", word: "西湖", difficulty: 1 },
+                    { pinyin: "dòng tíng hú", word: "洞庭湖", difficulty: 1 },
+                    { pinyin: "shuǐ guāng", word: "水光", difficulty: 1 },
+                    { pinyin: "liáo yàn", word: "潋滟", difficulty: 2 },
+                    { pinyin: "kōng méng", word: "空蒙", difficulty: 2 }
+                ]
+            },
+            {
+                lessonId: 18,
+                lessonTitle: "富饶的西沙群岛",
+                words: [
+                    { pinyin: "fù ráo de xī shā qún dǎo", word: "富饶的西沙群岛", difficulty: 1 },
+                    { pinyin: "xī shā qún dǎo", word: "西沙群岛", difficulty: 1 },
+                    { pinyin: "fù ráo", word: "富饶", difficulty: 2 },
+                    { pinyin: "hǎi shuǐ", word: "海水", difficulty: 1 },
+                    { pinyin: "hǎi dǐ", word: "海底", difficulty: 1 },
+                    { pinyin: "yú lèi", word: "鱼类", difficulty: 1 },
+                    { pinyin: "shān hú", word: "珊瑚", difficulty: 1 },
+                    { pinyin: "hǎi guī", word: "海龟", difficulty: 1 },
+                    { pinyin: "bèi lèi", word: "贝类", difficulty: 1 },
+                    { pinyin: "měi lì", word: "美丽", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 19,
+                lessonTitle: "海滨小城",
+                words: [
+                    { pinyin: "hǎi bīn xiǎo chéng", word: "海滨小城", difficulty: 1 },
+                    { pinyin: "hǎi bīn", word: "海滨", difficulty: 1 },
+                    { pinyin: "xiǎo chéng", word: "小城", difficulty: 1 },
+                    { pinyin: "hǎi biān", word: "海边", difficulty: 1 },
+                    { pinyin: "shā tān", word: "沙滩", difficulty: 1 },
+                    { pinyin: "hǎi fēng", word: "海风", difficulty: 1 },
+                    { pinyin: "hǎi làng", word: "海浪", difficulty: 1 },
+                    { pinyin: "yú chuán", word: "渔船", difficulty: 1 },
+                    { pinyin: "jiāng kǒu", word: "江口", difficulty: 1 },
+                    { pinyin: "měi lì", word: "美丽", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 20,
+                lessonTitle: "美丽的小兴安岭",
+                words: [
+                    { pinyin: "měi lì de xiǎo xīng ān lǐng", word: "美丽的小兴安岭", difficulty: 1 },
+                    { pinyin: "xiǎo xīng ān lǐng", word: "小兴安岭", difficulty: 1 },
+                    { pinyin: "sēn lín", word: "森林", difficulty: 1 },
+                    { pinyin: "shù mù", word: "树木", difficulty: 1 },
+                    { pinyin: "huā cǎo", word: "花草", difficulty: 1 },
+                    { pinyin: "niǎo er", word: "鸟儿", difficulty: 1 },
+                    { pinyin: "dòng wù", word: "动物", difficulty: 1 },
+                    { pinyin: "chūn tiān", word: "春天", difficulty: 1 },
+                    { pinyin: "xià tiān", word: "夏天", difficulty: 1 },
+                    { pinyin: "qiū tiān", word: "秋天", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 21,
+                lessonTitle: "大自然的声音",
+                words: [
+                    { pinyin: "dà zì rán de shēng yīn", word: "大自然的声音", difficulty: 1 },
+                    { pinyin: "dà zì rán", word: "大自然", difficulty: 1 },
+                    { pinyin: "shēng yīn", word: "声音", difficulty: 1 },
+                    { pinyin: "fēng shēng", word: "风声", difficulty: 1 },
+                    { pinyin: "shuǐ shēng", word: "水声", difficulty: 1 },
+                    { pinyin: "niǎo míng", word: "鸟鸣", difficulty: 1 },
+                    { pinyin: "chóng míng", word: "虫鸣", difficulty: 1 },
+                    { pinyin: "yīn yuè", word: "音乐", difficulty: 1 },
+                    { pinyin: "měi miào", word: "美妙", difficulty: 1 },
+                    { pinyin: "dòng tīng", word: "动听", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 22,
+                lessonTitle: "父亲、树林和鸟",
+                words: [
+                    { pinyin: "fù qīn shù lín hé niǎo", word: "父亲、树林和鸟", difficulty: 1 },
+                    { pinyin: "fù qīn", word: "父亲", difficulty: 1 },
+                    { pinyin: "shù lín", word: "树林", difficulty: 1 },
+                    { pinyin: "niǎo er", word: "鸟儿", difficulty: 1 },
+                    { pinyin: "ài hù", word: "爱护", difficulty: 1 },
+                    { pinyin: "bǎo hù", word: "保护", difficulty: 1 },
+                    { pinyin: "guān chá", word: "观察", difficulty: 2 },
+                    { pinyin: "tīng jiàn", word: "听见", difficulty: 1 },
+                    { pinyin: "kàn jiàn", word: "看见", difficulty: 1 },
+                    { pinyin: "gǎn jué", word: "感觉", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 23,
+                lessonTitle: "带刺的朋友",
+                words: [
+                    { pinyin: "dài cì de péng you", word: "带刺的朋友", difficulty: 1 },
+                    { pinyin: "cì wei", word: "刺猬", difficulty: 1 },
+                    { pinyin: "cì", word: "刺", difficulty: 1 },
+                    { pinyin: "péng you", word: "朋友", difficulty: 1 },
+                    { pinyin: "kě ài", word: "可爱", difficulty: 1 },
+                    { pinyin: "cōng míng", word: "聪明", difficulty: 1 },
+                    { pinyin: "jī ling", word: "机灵", difficulty: 2 },
+                    { pinyin: "huó pō", word: "活泼", difficulty: 1 },
+                    { pinyin: "yǒu qù", word: "有趣", difficulty: 1 },
+                    { pinyin: "hǎo wán", word: "好玩", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 24,
+                lessonTitle: "司马光",
+                words: [
+                    { pinyin: "sī mǎ guāng", word: "司马光", difficulty: 1 },
+                    { pinyin: "cōng míng", word: "聪明", difficulty: 1 },
+                    { pinyin: "yǒng gǎn", word: "勇敢", difficulty: 1 },
+                    { pinyin: "zhèn dìng", word: "镇定", difficulty: 2 },
+                    { pinyin: "jī zhì", word: "机智", difficulty: 2 },
+                    { pinyin: "bāng zhù", word: "帮助", difficulty: 1 },
+                    { pinyin: "jiù rén", word: "救人", difficulty: 1 },
+                    { pinyin: "zhì huì", word: "智慧", difficulty: 2 },
+                    { pinyin: "péng you", word: "朋友", difficulty: 1 },
+                    { pinyin: "hù xiāng", word: "互相", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 25,
+                lessonTitle: "掌声",
+                words: [
+                    { pinyin: "zhǎng shēng", word: "掌声", difficulty: 1 },
+                    { pinyin: "gǔ lì", word: "鼓励", difficulty: 2 },
+                    { pinyin: "zhī chí", word: "支持", difficulty: 1 },
+                    { pinyin: "guān xīn", word: "关心", difficulty: 1 },
+                    { pinyin: "bāng zhù", word: "帮助", difficulty: 1 },
+                    { pinyin: "péng you", word: "朋友", difficulty: 1 },
+                    { pinyin: "tóng xué", word: "同学", difficulty: 1 },
+                    { pinyin: "lǎo shī", word: "老师", difficulty: 1 },
+                    { pinyin: "xué xí", word: "学习", difficulty: 1 },
+                    { pinyin: "jìn bù", word: "进步", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 26,
+                lessonTitle: "灰雀",
+                words: [
+                    { pinyin: "huī què", word: "灰雀", difficulty: 1 },
+                    { pinyin: "niǎo er", word: "鸟儿", difficulty: 1 },
+                    { pinyin: "kě ài", word: "可爱", difficulty: 1 },
+                    { pinyin: "huó pō", word: "活泼", difficulty: 1 },
+                    { pinyin: "zì yóu", word: "自由", difficulty: 1 },
+                    { pinyin: "xìng fú", word: "幸福", difficulty: 1 },
+                    { pinyin: "ài hù", word: "爱护", difficulty: 1 },
+                    { pinyin: "bǎo hù", word: "保护", difficulty: 1 },
+                    { pinyin: "péng you", word: "朋友", difficulty: 1 },
+                    { pinyin: "hù xiāng", word: "互相", difficulty: 1 }
+                ]
+            },
+            {
+                lessonId: 27,
+                lessonTitle: "手术台就是阵地",
+                words: [
+                    { pinyin: "shǒu shù tái jiù shì zhèn dì", word: "手术台就是阵地", difficulty: 1 },
+                    { pinyin: "shǒu shù tái", word: "手术台", difficulty: 1 },
+                    { pinyin: "zhèn dì", word: "阵地", difficulty: 1 },
+                    { pinyin: "yī shēng", word: "医生", difficulty: 1 },
+                    { pinyin: "bìng rén", word: "病人", difficulty: 1 },
+                    { pinyin: "zhì liáo", word: "治疗", difficulty: 2 },
+                    { pinyin: "bāng zhù", word: "帮助", difficulty: 1 },
+                    { pinyin: "jiù rén", word: "救人", difficulty: 1 },
+                    { pinyin: "yǒng gǎn", word: "勇敢", difficulty: 1 },
+                    { pinyin: "wú sī", word: "无私", difficulty: 2 }
+                ]
+            }
+        ];
+
+        // 成就系统
+        const achievements = [
+            { id: "beginner", name: "初学者", description: "完成第1关", unlocked: false },
+            { id: "hardworking", name: "勤奋好学", description: "连续7天练习", unlocked: false },
+            { id: "master", name: "词语大师", description: "全部通关", unlocked: false },
+            { id: "perfect", name: "完美主义者", description: "单关全对", unlocked: false },
+            { id: "speed", name: "速度之星", description: "挑战赛3分钟内完成", unlocked: false }
+        ];
+
+        // 游戏状态
+        let gameState = {
+            currentMode: null,
+            currentLesson: null,
+            currentWords: [],
+            currentIndex: 0,
+            score: 0,
+            correctCount: 0,
+            wrongCount: 0,
+            startTime: null,
+            timerInterval: null,
+            wrongWords: [],
+            hintsUsed: 0,
+            consecutiveCorrect: 0
+        };
+
+        // 用户数据
+        let userData = {
+            completedLessons: [],
+            achievements: [],
+            wrongWords: [],
+            lastPlayDate: null,
+            consecutiveDays: 0,
+            highScores: []
+        };
+
+        // 设置
+        let settings = {
+            soundEnabled: true,
+            showProgress: true,
+            difficulty: 2
+        };
+
+        // 初始化
+        function init() {
+            loadUserData();
+            loadSettings();
+            showScreen('menu-screen');
+            renderAchievements();
+        }
+
+        // 屏幕切换
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 显示主菜单
+        function showMenu() {
+            clearInterval(gameState.timerInterval);
+            showScreen('menu-screen');
+            renderAchievements();
+        }
+
+        // 开始闯关模式
+        function startLessonMode() {
+            showScreen('lesson-select-screen');
+            renderLessonList();
+        }
+
+        // 渲染课文列表
+        function renderLessonList() {
+            const lessonList = document.getElementById('lesson-list');
+            lessonList.innerHTML = '';
+
+            wordBank.forEach(lesson => {
+                const isCompleted = userData.completedLessons.includes(lesson.lessonId);
+                const item = document.createElement('div');
+                item.className = `lesson-item ${isCompleted ? 'completed' : ''}`;
+                item.innerHTML = `
+                    <h4>第${lesson.lessonId}课 ${lesson.lessonTitle}</h4>
+                    <p>${lesson.words.length}个词语</p>
+                `;
+                item.onclick = () => startLesson(lesson.lessonId);
+                lessonList.appendChild(item);
+            });
+        }
+
+        // 开始课文练习
+        function startLesson(lessonId) {
+            const lesson = wordBank.find(l => l.lessonId === lessonId);
+            if (!lesson) return;
+
+            gameState.currentMode = 'lesson';
+            gameState.currentLesson = lesson;
+            gameState.currentWords = [...lesson.words];
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            gameState.wrongCount = 0;
+            gameState.wrongWords = [];
+            gameState.hintsUsed = 0;
+            gameState.consecutiveCorrect = 0;
+            gameState.startTime = Date.now();
+
+            showScreen('game-screen');
+            updateGameUI();
+            startTimer();
+            loadCurrentWord();
+        }
+
+        // 开始挑战赛模式
+        function startChallengeMode() {
+            // 随机抽取20个词语
+            const allWords = [];
+            wordBank.forEach(lesson => {
+                lesson.words.forEach(word => {
+                    allWords.push({ ...word, lessonId: lesson.lessonId, lessonTitle: lesson.lessonTitle });
+                });
+            });
+
+            // 随机打乱
+            const shuffled = allWords.sort(() => Math.random() - 0.5);
+            const selectedWords = shuffled.slice(0, 20);
+
+            gameState.currentMode = 'challenge';
+            gameState.currentWords = selectedWords;
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            gameState.wrongCount = 0;
+            gameState.wrongWords = [];
+            gameState.hintsUsed = 0;
+            gameState.consecutiveCorrect = 0;
+            gameState.startTime = Date.now();
+
+            showScreen('game-screen');
+            updateGameUI();
+            startTimer();
+            loadCurrentWord();
+        }
+
+        // 开始错题本模式
+        function startWrongWordsMode() {
+            if (userData.wrongWords.length === 0) {
+                alert('错题本是空的！先去练习吧！');
+                return;
+            }
+
+            gameState.currentMode = 'wrongWords';
+            gameState.currentWords = [...userData.wrongWords];
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            gameState.wrongCount = 0;
+            gameState.wrongWords = [];
+            gameState.hintsUsed = 0;
+            gameState.consecutiveCorrect = 0;
+            gameState.startTime = Date.now();
+
+            showScreen('game-screen');
+            updateGameUI();
+            startTimer();
+            loadCurrentWord();
+        }
+
+        // 更新游戏界面
+        function updateGameUI() {
+            const currentLesson = gameState.currentLesson || { lessonTitle: '挑战赛' };
+            document.getElementById('current-lesson').textContent = currentLesson.lessonTitle;
+            document.getElementById('current-score').textContent = gameState.score;
+            updateProgressBar();
+        }
+
+        // 更新进度条
+        function updateProgressBar() {
+            const progress = (gameState.currentIndex / gameState.currentWords.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `${gameState.currentIndex}/${gameState.currentWords.length}`;
+        }
+
+        // 加载当前词语
+        function loadCurrentWord() {
+            if (gameState.currentIndex >= gameState.currentWords.length) {
+                endGame();
+                return;
+            }
+
+            const currentWord = gameState.currentWords[gameState.currentIndex];
+            document.getElementById('pinyin-display').textContent = currentWord.pinyin;
+            document.getElementById('word-input').value = '';
+            document.getElementById('word-input').className = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('hint-text').textContent = '';
+            document.getElementById('word-input').focus();
+        }
+
+        // 提交答案
+        function submitAnswer() {
+            const input = document.getElementById('word-input');
+            const userAnswer = input.value.trim();
+            const currentWord = gameState.currentWords[gameState.currentIndex];
+            const feedback = document.getElementById('feedback');
+
+            if (!userAnswer) {
+                alert('请输入汉字！');
+                return;
+            }
+
+            if (userAnswer === currentWord.word) {
+                // 正确
+                input.classList.add('correct', 'pulse');
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✓ 正确！';
+                feedback.style.display = 'block';
+
+                gameState.score += 10 + gameState.consecutiveCorrect * 2;
+                gameState.correctCount++;
+                gameState.consecutiveCorrect++;
+
+                if (settings.soundEnabled) {
+                    playSound('correct');
+                }
+
+                setTimeout(() => {
+                    gameState.currentIndex++;
+                    updateProgressBar();
+                    document.getElementById('current-score').textContent = gameState.score;
+                    loadCurrentWord();
+                }, 1000);
+            } else {
+                // 错误
+                input.classList.add('wrong', 'shake');
+                feedback.className = 'feedback wrong';
+                feedback.textContent = `✗ 错误！正确答案是：${currentWord.word}`;
+                feedback.style.display = 'block';
+
+                gameState.wrongCount++;
+                gameState.consecutiveCorrect = 0;
+
+                // 添加到错题
+                const wrongWordIndex = userData.wrongWords.findIndex(
+                    w => w.pinyin === currentWord.pinyin && w.word === currentWord.word
+                );
+                if (wrongWordIndex === -1) {
+                    userData.wrongWords.push({
+                        ...currentWord,
+                        wrongCount: 1
+                    });
+                } else {
+                    userData.wrongWords[wrongWordIndex].wrongCount++;
+                }
+
+                gameState.wrongWords.push(currentWord);
+
+                if (settings.soundEnabled) {
+                    playSound('wrong');
+                }
+
+                setTimeout(() => {
+                    gameState.currentIndex++;
+                    updateProgressBar();
+                    loadCurrentWord();
+                }, 2000);
+            }
+        }
+
+        // 跳过词语
+        function skipWord() {
+            const currentWord = gameState.currentWords[gameState.currentIndex];
+            const feedback = document.getElementById('feedback');
+
+            feedback.className = 'feedback wrong';
+            feedback.textContent = `已跳过！正确答案是：${currentWord.word}`;
+            feedback.style.display = 'block';
+
+            gameState.wrongCount++;
+            gameState.consecutiveCorrect = 0;
+
+            // 添加到错题
+            const wrongWordIndex = userData.wrongWords.findIndex(
+                w => w.pinyin === currentWord.pinyin && w.word === currentWord.word
+            );
+            if (wrongWordIndex === -1) {
+                userData.wrongWords.push({
+                    ...currentWord,
+                    wrongCount: 1
+                });
+            } else {
+                userData.wrongWords[wrongWordIndex].wrongCount++;
+            }
+
+            gameState.wrongWords.push(currentWord);
+
+            setTimeout(() => {
+                gameState.currentIndex++;
+                updateProgressBar();
+                loadCurrentWord();
+            }, 2000);
+        }
+
+        // 使用提示
+        function useHint() {
+            if (gameState.hintsUsed >= 3) {
+                alert('提示次数已用完！');
+                return;
+            }
+
+            const currentWord = gameState.currentWords[gameState.currentIndex];
+            const hintText = `提示：${currentWord.word[0]}...`;
+            document.getElementById('hint-text').textContent = hintText;
+            gameState.hintsUsed++;
+            gameState.score = Math.max(0, gameState.score - 2);
+            document.getElementById('current-score').textContent = gameState.score;
+        }
+
+        // 计时器
+        function startTimer() {
+            gameState.timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('current-time').textContent =
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // 结束游戏
+        function endGame() {
+            clearInterval(gameState.timerInterval);
+
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+
+            document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('result-correct').textContent = gameState.correctCount;
+            document.getElementById('result-wrong').textContent = gameState.wrongCount;
+            document.getElementById('result-time').textContent =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // 显示错题
+            const wrongWordsList = document.getElementById('wrong-words-list');
+            const wrongWordsContainer = document.getElementById('wrong-words-container');
+            wrongWordsContainer.innerHTML = '';
+
+            if (gameState.wrongWords.length > 0) {
+                wrongWordsList.style.display = 'block';
+                gameState.wrongWords.forEach(word => {
+                    const item = document.createElement('div');
+                    item.className = 'wrong-word-item';
+                    item.innerHTML = `
+                        <span class="pinyin">${word.pinyin}</span>
+                        <span class="answer">${word.word}</span>
+                    `;
+                    wrongWordsContainer.appendChild(item);
+                });
+            } else {
+                wrongWordsList.style.display = 'none';
+            }
+
+            // 检查成就
+            checkAchievements();
+
+            // 保存数据
+            saveUserData();
+
+            showScreen('result-screen');
+        }
+
+        // 重做错题
+        function retryWrongWords() {
+            if (gameState.wrongWords.length === 0) {
+                alert('没有错题可重做！');
+                showMenu();
+                return;
+            }
+
+            gameState.currentMode = 'retry';
+            gameState.currentWords = [...gameState.wrongWords];
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            gameState.wrongCount = 0;
+            gameState.wrongWords = [];
+            gameState.hintsUsed = 0;
+            gameState.consecutiveCorrect = 0;
+            gameState.startTime = Date.now();
+
+            showScreen('game-screen');
+            updateGameUI();
+            startTimer();
+            loadCurrentWord();
+        }
+
+        // 检查成就
+        function checkAchievements() {
+            // 初学者：完成第1关
+            if (gameState.currentMode === 'lesson' && gameState.currentLesson.lessonId === 1) {
+                unlockAchievement('beginner');
+            }
+
+            // 完美主义者：单关全对
+            if (gameState.currentMode === 'lesson' && gameState.wrongCount === 0) {
+                unlockAchievement('perfect');
+            }
+
+            // 词语大师：全部通关
+            if (userData.completedLessons.length === wordBank.length) {
+                unlockAchievement('master');
+            }
+
+            // 速度之星：挑战赛3分钟内完成
+            if (gameState.currentMode === 'challenge') {
+                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+                if (elapsed < 180 && gameState.correctCount >= 15) {
+                    unlockAchievement('speed');
+                }
+            }
+        }
+
+        // 解锁成就
+        function unlockAchievement(achievementId) {
+            if (!userData.achievements.includes(achievementId)) {
+                userData.achievements.push(achievementId);
+                const achievement = achievements.find(a => a.id === achievementId);
+                alert(`🎉 恭喜解锁成就：${achievement.name}！`);
+            }
+        }
+
+        // 渲染成就
+        function renderAchievements() {
+            const container = document.getElementById('achievement-display');
+            container.innerHTML = '';
+
+            achievements.forEach(achievement => {
+                const isUnlocked = userData.achievements.includes(achievement.id);
+                const item = document.createElement('div');
+                item.className = `achievement-item ${isUnlocked ? 'unlocked' : ''}`;
+                item.innerHTML = `
+                    <h4>${isUnlocked ? '🏆' : '🔒'} ${achievement.name}</h4>
+                    <p>${achievement.description}</p>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // 显示设置
+        function showSettings() {
+            showScreen('settings-screen');
+            document.getElementById('sound-toggle').checked = settings.soundEnabled;
+            document.getElementById('progress-toggle').checked = settings.showProgress;
+            document.getElementById('difficulty-select').value = settings.difficulty;
+        }
+
+        // 保存设置
+        function saveSettings() {
+            settings.soundEnabled = document.getElementById('sound-toggle').checked;
+            settings.showProgress = document.getElementById('progress-toggle').checked;
+            settings.difficulty = parseInt(document.getElementById('difficulty-select').value);
+            localStorage.setItem('grade3chinese_settings', JSON.stringify(settings));
+        }
+
+        // 加载设置
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('grade3chinese_settings');
+            if (savedSettings) {
+                settings = JSON.parse(savedSettings);
+            }
+        }
+
+        // 清除所有数据
+        function clearAllData() {
+            if (confirm('确定要清除所有数据吗？这将删除所有进度和成就！')) {
+                localStorage.removeItem('grade3chinese_userdata');
+                localStorage.removeItem('grade3chinese_settings');
+                userData = {
+                    completedLessons: [],
+                    achievements: [],
+                    wrongWords: [],
+                    lastPlayDate: null,
+                    consecutiveDays: 0,
+                    highScores: []
+                };
+                settings = {
+                    soundEnabled: true,
+                    showProgress: true,
+                    difficulty: 2
+                };
+                alert('数据已清除！');
+                showMenu();
+            }
+        }
+
+        // 确认退出
+        function confirmExit() {
+            if (confirm('确定要退出当前练习吗？进度将不会保存！')) {
+                showMenu();
+            }
+        }
+
+        // 保存用户数据
+        function saveUserData() {
+            // 更新连续天数
+            const today = new Date().toDateString();
+            if (userData.lastPlayDate !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (userData.lastPlayDate === yesterday.toDateString()) {
+                    userData.consecutiveDays++;
+                } else {
+                    userData.consecutiveDays = 1;
+                }
+                userData.lastPlayDate = today;
+
+                // 检查勤奋好学成就
+                if (userData.consecutiveDays >= 7) {
+                    unlockAchievement('hardworking');
+                }
+            }
+
+            // 标记已完成的课文
+            if (gameState.currentMode === 'lesson' && gameState.wrongCount === 0) {
+                if (!userData.completedLessons.includes(gameState.currentLesson.lessonId)) {
+                    userData.completedLessons.push(gameState.currentLesson.lessonId);
+                }
+            }
+
+            // 保存高分
+            if (gameState.currentMode === 'challenge') {
+                userData.highScores.push({
+                    score: gameState.score,
+                    date: new Date().toISOString()
+                });
+                userData.highScores.sort((a, b) => b.score - a.score);
+                userData.highScores = userData.highScores.slice(0, 10);
+            }
+
+            localStorage.setItem('grade3chinese_userdata', JSON.stringify(userData));
+        }
+
+        // 加载用户数据
+        function loadUserData() {
+            const savedData = localStorage.getItem('grade3chinese_userdata');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+            }
+        }
+
+        // 播放音效（使用 Web Audio API）
+        function playSound(type) {
+            if (!settings.soundEnabled) return;
+
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            if (type === 'correct') {
+                oscillator.frequency.value = 523.25; // C5
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                oscillator.frequency.value = 196.00; // G3
+                oscillator.type = 'sawtooth';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+        }
+
+        // 键盘事件
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const activeScreen = document.querySelector('.screen.active');
+                if (activeScreen && activeScreen.id === 'game-screen') {
+                    submitAnswer();
+                }
+            }
+        });
+
+        // 设置变化时保存
+        document.getElementById('sound-toggle').addEventListener('change', saveSettings);
+        document.getElementById('progress-toggle').addEventListener('change', saveSettings);
+        document.getElementById('difficulty-select').addEventListener('change', saveSettings);
+
+        // 初始化游戏
+        init();
+    </script>
+</body>
+</html>
